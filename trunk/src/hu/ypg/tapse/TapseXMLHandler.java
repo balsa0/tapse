@@ -243,6 +243,10 @@ public class TapseXMLHandler {
 	 */
 	public static void setDaysEnabled(boolean enabled){
 		set_daysEnabled = enabled;
+		
+		//write xml
+		String r = boolToString(enabled);
+		rootElement.getElementsByTagName(tr_daysEnabled).item(0).setTextContent(r);
 	}
 	
 	/**
@@ -263,38 +267,81 @@ public class TapseXMLHandler {
 	 * @param dow Day of week (0-6) Begins with Sonday.
 	 * @param enabled True enables taking shots on the specific day.
 	 */
-	public static void setDayOfWeekEnabled(int dow, boolean enabled){
+	public static void setDayOfWeekEnabled(Integer dow, boolean enabled){
 		if(dow >= set_days.length || dow < 0)
 			return;
 		set_days[dow] = enabled;
+		
+		//write xml
+		String r = boolToString(enabled);
+		NamedNodeMap n = rootElement.getElementsByTagName(tr_days).item(0).getAttributes();
+		n.getNamedItem("d"+ dow.toString()).setTextContent(r); ///tesztelni
 	}
 	
+	/**
+	 * Returns schedule start hour.
+	 * @return Returns schedule start hour.
+	 */
 	public static Integer getTimeFromH(){
 		return fromH;
 	}
 	
+	/**
+	 * Returns schedule start minute.
+	 * @return Returns schedule start minute.
+	 */
 	public static Integer getTimeFromM(){
 		return fromM;
 	}
 	
+	/**
+	 * Returns schedule stop hour.
+	 * @return Returns schedule stop hour.
+	 */
 	public static Integer getTimeToH(){
 		return toH;
 	}
 	
+	/**
+	 * Returns schedule stop minute.
+	 * @return Returns schedule stop minute.
+	 */
 	public static Integer getTimeToM(){
 		return toM;
 	}
 	
+	/**
+	 * Sets schedule start time.
+	 * @param h Start hour.
+	 * @param m Start minute of hour.
+	 */
 	public static void setTimeFrom(Integer h, Integer m){
 		if(h < 0 || h > 23 || m < 0 || m > 59)
 			return;
-		toH = h; toM = m;
+		fromH = h; fromM = m;
+		
+		//write xml
+		NamedNodeMap n = rootElement.getElementsByTagName(tr_from).item(0).getAttributes();
+		n.getNamedItem("h").setTextContent(h.toString()); ///tesztelni
+		n.getNamedItem("m").setTextContent(m.toString()); ///tesztelni
 	}
 	
+	/**
+	 * Sets schedule stop time.
+	 * @param h Stop hour.
+	 * @param m Stop minute of hour.
+	 */
 	public static void setTimeTo(Integer h, Integer m){
+		//checking for correct time intervals
 		if(h < 0 || h > 23 || m < 0 || m > 59)
 			return;
-		fromH = h; fromM = m;
+		
+		toH = h; toM = m;
+		
+		//write xml
+		NamedNodeMap n = rootElement.getElementsByTagName(tr_to).item(0).getAttributes();
+		n.getNamedItem("h").setTextContent(h.toString()); ///tesztelni
+		n.getNamedItem("m").setTextContent(m.toString()); ///tesztelni
 	}
 	
 	public static boolean isProgEnabled(){
