@@ -1,6 +1,7 @@
 package hu.ypg.tapse;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -10,6 +11,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.eclipse.core.runtime.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -22,6 +24,7 @@ public class TapseXMLHandler {
 	//settings
 	private static boolean set_enabled;
 	private static Integer set_freq;
+	private static String set_saveFolder;
 	private static Integer id_lastShot;
 	private static boolean[] set_days;
 	private static boolean set_daysEnabled;
@@ -39,6 +42,7 @@ public class TapseXMLHandler {
 	private static final String tr_root = "settings";
 	private static final String tr_enabled = "enabled";
 	private static final String tr_freq = "freq";
+	private static final String tr_saveFolder = "savefolder";
 	private static final String tr_lastID = "lastshotid";
 	private static final String tr_daysEnabled = "daysenabled";
 	private static final String tr_days = "days";
@@ -112,6 +116,9 @@ public class TapseXMLHandler {
 	 */
 	private void readSettings(){
 		
+		//log
+		LOGGER.info("Reading Settings...");
+		
 		//getting enabled
 		setEnabled(stringToBool(rootElement.getElementsByTagName(tr_enabled).item(0).getTextContent()));
 		
@@ -151,7 +158,9 @@ public class TapseXMLHandler {
 	/**
 	 * This method writes changes to the settings XML.
 	 */
-	public static void settingsWriter(){
+	public static void writeSettings(){
+		//log
+		LOGGER.info("Writing XML...");
 		
 		//writing setting
 		try{
@@ -208,6 +217,56 @@ public class TapseXMLHandler {
 		//write xml
 		String r = boolToString(enabled);
 		rootElement.getElementsByTagName(tr_enabled).item(0).setTextContent(r);
+	}
+	
+	/**
+	 * Returns the shot save folder path.
+	 * @return Returns the shot save folder path.
+	 */
+	public static String getSaveFolder(){
+		return set_saveFolder;
+	}
+	
+	/**
+	 * Sets shot save folder.
+	 * @param folder The folder path.
+	 * @return returns false if folder not exists.
+	 */
+	public static boolean setSaveFolder(String folder){
+		//check if folder exists
+		if(!checkSaveFolder(folder))
+			return false;
+		
+		//set variable
+		set_saveFolder = folder;
+		
+		//write xml
+		rootElement.getElementsByTagName(tr_saveFolder).item(0).setTextContent(folder);
+		
+		//success
+		return true;
+	}
+
+	/**
+	 * Private method to check a specific folder.
+	 * @param folder The folder to check.
+	 * @return Returns true if folder is OK.
+	 */
+	private static boolean checkSaveFolder(String folder){
+		//check if folder exists
+		File f = new File(folder);
+		if(!f.exists())
+			return false;
+		else
+			return true;
+	}
+	
+	/**
+	 * Checks if save folder is ready.
+	 * @return Returns true if folder is OK.
+	 */
+	public static boolean checkSaveFolder(){
+		return checkSaveFolder(getSaveFolder());
 	}
 
 	/**
@@ -266,16 +325,20 @@ public class TapseXMLHandler {
 	 * Enables/Disables taking shots on specific day.
 	 * @param dow Day of week (0-6) Begins with Sonday.
 	 * @param enabled True enables taking shots on the specific day.
+	 * @return Returns true on success.
 	 */
-	public static void setDayOfWeekEnabled(Integer dow, boolean enabled){
+	public static boolean setDayOfWeekEnabled(Integer dow, boolean enabled){
 		if(dow >= set_days.length || dow < 0)
-			return;
+			return false;
 		set_days[dow] = enabled;
 		
 		//write xml
 		String r = boolToString(enabled);
 		NamedNodeMap n = rootElement.getElementsByTagName(tr_days).item(0).getAttributes();
 		n.getNamedItem("d"+ dow.toString()).setTextContent(r); ///tesztelni
+	
+		//success
+		return true;
 	}
 	
 	/**
@@ -314,27 +377,32 @@ public class TapseXMLHandler {
 	 * Sets schedule start time.
 	 * @param h Start hour.
 	 * @param m Start minute of hour.
+	 * @return Returns true on success.
 	 */
-	public static void setTimeFrom(Integer h, Integer m){
+	public static boolean setTimeFrom(Integer h, Integer m){
 		if(h < 0 || h > 23 || m < 0 || m > 59)
-			return;
+			return false;
 		fromH = h; fromM = m;
 		
 		//write xml
 		NamedNodeMap n = rootElement.getElementsByTagName(tr_from).item(0).getAttributes();
 		n.getNamedItem("h").setTextContent(h.toString()); ///tesztelni
 		n.getNamedItem("m").setTextContent(m.toString()); ///tesztelni
+		
+		//success
+		return true;
 	}
 	
 	/**
 	 * Sets schedule stop time.
 	 * @param h Stop hour.
 	 * @param m Stop minute of hour.
+	 * @return Returns true on success.
 	 */
-	public static void setTimeTo(Integer h, Integer m){
+	public static boolean setTimeTo(Integer h, Integer m){
 		//checking for correct time intervals
 		if(h < 0 || h > 23 || m < 0 || m > 59)
-			return;
+			return false;
 		
 		toH = h; toM = m;
 		
@@ -342,6 +410,9 @@ public class TapseXMLHandler {
 		NamedNodeMap n = rootElement.getElementsByTagName(tr_to).item(0).getAttributes();
 		n.getNamedItem("h").setTextContent(h.toString()); ///tesztelni
 		n.getNamedItem("m").setTextContent(m.toString()); ///tesztelni
+		
+		//success
+		return true;
 	}
 	
 	/**

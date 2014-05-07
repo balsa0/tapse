@@ -71,20 +71,16 @@ public class TapseSettings {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
 					//create widow
 					//final TapseSettings window = new TapseSettings();
 					window.frmTapseSettings.setVisible(true);
 				
 					//traybar
 					initializeTray();
-					
-					
+						
 				} catch (Exception e) {
 					e.printStackTrace();
-				}
-				
-				
+				}				
 			}
 
 		});
@@ -92,7 +88,7 @@ public class TapseSettings {
 	
 	//exit from application
 	private static void exitApp(){
-		settingsHandler.settingsWriter();
+		settingsHandler.writeSettings();
 		System.out.println("Exiting...");
 		System.exit(0);
 	}
@@ -251,11 +247,12 @@ public class TapseSettings {
 		JButton w_openFolder = new JButton("Open Folder");
 		w_openFolder.setBackground(SystemColor.controlHighlight);
 		w_openFolder.addActionListener(new ActionListener() {
+			//open shots save folder in explorer
 			public void actionPerformed(ActionEvent arg0) {
 				Desktop desktop = Desktop.getDesktop();
 		        File dirToOpen = null;
 		        try {
-		            dirToOpen = new File("c:\\");
+		            dirToOpen = new File(settingsHandler.getSaveFolder());
 		            desktop.open(dirToOpen);
 		        }catch (Exception e) {
 		            e.printStackTrace();
@@ -264,7 +261,7 @@ public class TapseSettings {
 		});
 		frmTapseSettings.getContentPane().add(w_openFolder, "cell 0 6");
 		
-		JLabel w_saveFolderDisp = new JLabel("Unknown");
+		JLabel w_saveFolderDisp = new JLabel(settingsHandler.getSaveFolder());
 		w_saveFolderDisp.setFont(new Font("Tahoma", Font.BOLD, 11));
 		w_saveFolderDisp.setHorizontalAlignment(SwingConstants.RIGHT);
 		w_saveFolderDisp.setBackground(new Color(0, 128, 128));
@@ -273,14 +270,20 @@ public class TapseSettings {
 		JButton w_changeSaveFolder = new JButton("Change");
 		w_changeSaveFolder.setBackground(SystemColor.controlHighlight);
 		w_changeSaveFolder.addActionListener(new ActionListener() {
+			//clicked on save folder chooser
 			public void actionPerformed(ActionEvent e) {
-				  	JFileChooser chooser = new JFileChooser();
-				  	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				    int returnVal = chooser.showOpenDialog(frmTapseSettings);
-				    if(returnVal == JFileChooser.APPROVE_OPTION) {
-				       System.out.println("You chose to open this file: " +
-				            chooser.getSelectedFile().getName());
-				    }
+				//opening folder browse dialog
+			  	JFileChooser chooser = new JFileChooser();
+			  	chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			  	//setting default directory
+			  	chooser.setCurrentDirectory(new File(settingsHandler.getSaveFolder()));
+			    int returnVal = chooser.showOpenDialog(frmTapseSettings);
+			    if(returnVal == JFileChooser.APPROVE_OPTION) {
+			    	if(!settingsHandler.setSaveFolder(chooser.getSelectedFile().getName()))
+			    		System.out.println("FAILED!!!!!!!!!!");
+			    	System.out.println("You chose to open this file: " +
+			            chooser.getSelectedFile().getName());
+			    }
 			}
 		});
 		frmTapseSettings.getContentPane().add(w_changeSaveFolder, "cell 0 5");
