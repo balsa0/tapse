@@ -207,10 +207,10 @@ public class TapseSettings {
 		w_enableTapse.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		w_enableTapse.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				settingsHandler.set_enabled(w_enableTapse.isSelected());
+				settingsHandler.setEnabled(w_enableTapse.isSelected());
 			}
 		});
-		w_enableTapse.setSelected(settingsHandler.is_enabled());
+		w_enableTapse.setSelected(settingsHandler.isEnabled());
 		w_enableTapse.setBackground(SystemColor.control);
 		frmTapseSettings.getContentPane().add(w_enableTapse, "cell 0 1");
 		
@@ -221,7 +221,7 @@ public class TapseSettings {
 		w_freqSpin.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				try{
-					settingsHandler.set_frequency((Integer) w_freqSpin.getValue());
+					settingsHandler.setFrequency((Integer) w_freqSpin.getValue());
 				}catch(Exception e){
 					e.printStackTrace();
 				}
@@ -229,7 +229,7 @@ public class TapseSettings {
 			}
 		});
 		
-		w_freqSpin.setValue(settingsHandler.get_frequency());
+		w_freqSpin.setValue(settingsHandler.getFrequency());
 		
 		w_freqSpin.setBackground(new Color(255, 255, 255));
 		frmTapseSettings.getContentPane().add(w_freqSpin, "cell 0 2,growx");

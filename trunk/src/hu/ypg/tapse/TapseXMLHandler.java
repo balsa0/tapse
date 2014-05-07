@@ -72,6 +72,7 @@ public class TapseXMLHandler {
 		
 			//check root element
 			assert rootE == tr_root;
+			
 			//read settings
 			readSettings();
 			
@@ -121,11 +122,11 @@ public class TapseXMLHandler {
 		return set_freq;
 	}
 
-	public static void setFrequency(Integer set_freq) {
+	public static void setFrequency(Integer freq) {
 		//freqency can't be smaller than '1'
-		if(set_freq < 1)
-			set_freq = 1;
-		TapseXMLHandler.set_freq = set_freq;
+		if(freq < 1)
+			freq = 1;
+		set_freq = freq;
 		
 		//write xml
 		rootElement.getElementsByTagName(tr_freq).item(0).setTextContent(set_freq.toString());
@@ -135,13 +136,13 @@ public class TapseXMLHandler {
 		return set_enabled;
 	}
 
-	public static void setEnabled(boolean set_enabled) {
+	public static void setEnabled(boolean enabled) {
 		//set variable
-		TapseXMLHandler.set_enabled = set_enabled;
+		set_enabled = enabled;
 		
 		//write xml
 		String r;
-		if(set_enabled)
+		if(enabled)
 			r = "true";
 		else
 			r = "false";
@@ -153,8 +154,8 @@ public class TapseXMLHandler {
 		return id_lastShot;
 	}
 
-	public static void setLastShotID(Integer id_lastShot) {		
-		TapseXMLHandler.id_lastShot = id_lastShot;
+	public static void setLastShotID(Integer num) {		
+		id_lastShot = num;
 		
 		//write xml
 		rootElement.getElementsByTagName(tr_lastID).item(0).setTextContent(id_lastShot.toString());
@@ -165,7 +166,7 @@ public class TapseXMLHandler {
 	}
 	
 	public static void setDaysEnabled(boolean enabled){
-		TapseXMLHandler.set_daysEnabled = enabled;
+		set_daysEnabled = enabled;
 	}
 	
 	public static boolean isDayOfWeekEnabed(int dow){
@@ -208,6 +209,21 @@ public class TapseXMLHandler {
 			return;
 		fromH = h; fromM = m;
 	}
-		
+	
+	public static boolean isProgEnabled(){
+		return set_progEnabled;
+	}
+	
+	public static void setProgEnabled(boolean enabled){
+		set_progEnabled = enabled;
+	}
+	
+	public static String getProgName(){
+		return set_prog;
+	}
+	
+	public static void setProgName(String name){
+		set_prog = name;
+	}
 	
 }
