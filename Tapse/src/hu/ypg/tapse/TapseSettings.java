@@ -80,6 +80,7 @@ public class TapseSettings {
 					initializeTray();
 					
 					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
