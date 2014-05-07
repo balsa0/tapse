@@ -344,23 +344,50 @@ public class TapseXMLHandler {
 		n.getNamedItem("m").setTextContent(m.toString()); ///tesztelni
 	}
 	
+	/**
+	 * Returns true if program watching is active.
+	 * @return Returns true if program watching is active.
+	 */
 	public static boolean isProgEnabled(){
 		return set_progEnabled;
 	}
 	
+	/**
+	 * Enables/Disables program watching.
+	 * @param enabled True enables program watching.
+	 */
 	public static void setProgEnabled(boolean enabled){
 		set_progEnabled = enabled;
+		
+		//write xml
+		String r = boolToString(enabled);
+		rootElement.getElementsByTagName(tr_progEnabled).item(0).setTextContent(r);
 	}
 	
+	/**
+	 * Returns name of the watched program.
+	 * @return Returns name of the watched program.
+	 */
 	public static String getProgName(){
 		return set_prog;
 	}
 	
+	/**
+	 * Sets name of the watched program.
+	 * @param name Name of the watched program.
+	 */
 	public static void setProgName(String name){
 		set_prog = name;
+		
+		//write xml
+		rootElement.getElementsByTagName(tr_prog).item(0).setTextContent(name);
 	}
 	
-	//bool to string converter
+	/**
+	 * Makes a string from a bool.
+	 * @param b The bool to convert.
+	 * @return "true" or "false" string.
+	 */
 	public static final String boolToString(boolean b){
 		if(b)
 			return "true";
@@ -368,6 +395,11 @@ public class TapseXMLHandler {
 			return "false";
 	}
 	
+	/**
+	 * Parses a string, converts it to bool.
+	 * @param s The string to parse.
+	 * @return Returns the bool parsed from string.
+	 */
 	public static final boolean stringToBool(String s){
 		s = s.toLowerCase().trim();
 		if( s.equals("") || s.equals("true") ){
