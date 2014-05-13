@@ -1,7 +1,6 @@
 package hu.ypg.tapse;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -11,7 +10,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.eclipse.core.runtime.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -33,6 +31,8 @@ public class TapseXMLHandler {
 	private static String set_prog;
 	private static boolean set_progEnabled;
 	
+	private static Integer val_NextShotRemaining;
+	
 	
 	private static Document doc;
 	private static Element rootElement;
@@ -50,6 +50,7 @@ public class TapseXMLHandler {
 	private static final String tr_to = "to";
 	private static final String tr_progEnabled = "progenabled";
 	private static final String tr_prog = "prog";
+	
 	
 	/**
 	 * Class constructor, initializes settings and starts xml parsing.
@@ -72,6 +73,9 @@ public class TapseXMLHandler {
 		for(int i = 0; i < 7; i++){
 			set_days[i] = true;
 		}
+		
+		//remaining until next shot
+		val_NextShotRemaining = 0;
 		
 		//initialize xml and variables
 		initialize();
@@ -125,6 +129,9 @@ public class TapseXMLHandler {
 		//getting frequency
 		setFrequency(Integer.parseInt(rootElement.getElementsByTagName(tr_freq).item(0).getTextContent()));
 		
+		//getting save folder
+		setSaveFolder(rootElement.getElementsByTagName(tr_saveFolder).item(0).getTextContent());
+		
 		//getting last shot id
 		setLastShotID(Integer.parseInt(rootElement.getElementsByTagName(tr_lastID).item(0).getTextContent()));
 	
@@ -145,8 +152,8 @@ public class TapseXMLHandler {
 		
 		//get time "to"
 		NamedNodeMap to = rootElement.getElementsByTagName(tr_to).item(0).getAttributes();
-		setTimeFrom(Integer.parseInt(to.getNamedItem("h").getTextContent()),
-					Integer.parseInt(to.getNamedItem("m").getTextContent()));
+		setTimeTo(Integer.parseInt(to.getNamedItem("h").getTextContent()),
+				  Integer.parseInt(to.getNamedItem("m").getTextContent()));
 		
 		//get program watching enabled
 		setProgEnabled(stringToBool(rootElement.getElementsByTagName(tr_progEnabled).item(0).getTextContent()));
@@ -233,6 +240,9 @@ public class TapseXMLHandler {
 	 * @return returns false if folder not exists.
 	 */
 	public static boolean setSaveFolder(String folder){
+		//translate folder path
+		folder = translatePath(folder);
+		
 		//check if folder exists
 		if(!checkSaveFolder(folder))
 			return false;
@@ -242,6 +252,9 @@ public class TapseXMLHandler {
 		
 		//write xml
 		rootElement.getElementsByTagName(tr_saveFolder).item(0).setTextContent(folder);
+		
+		//log
+		LOGGER.info("Save folder changed to: "+folder);
 		
 		//success
 		return true;
@@ -259,6 +272,7 @@ public class TapseXMLHandler {
 			return false;
 		else
 			return true;
+		//return true;
 	}
 	
 	/**
@@ -358,6 +372,14 @@ public class TapseXMLHandler {
 	}
 	
 	/**
+	 * Returns timefrom as string.
+	 * @return Returns timefrom as string
+	 */
+	public static String getTimeFrom(){
+		return String.format("%02d", fromH)+":"+String.format("%02d", fromM);
+	}
+	
+	/**
 	 * Returns schedule stop hour.
 	 * @return Returns schedule stop hour.
 	 */
@@ -371,6 +393,14 @@ public class TapseXMLHandler {
 	 */
 	public static Integer getTimeToM(){
 		return toM;
+	}
+	
+	/**
+	 * Returns timeto as string.
+	 * @return Returns timeto as string
+	 */
+	public static String getTimeTo(){
+		return String.format("%02d", toH)+":"+String.format("%02d", toM);
 	}
 	
 	/**
@@ -455,6 +485,22 @@ public class TapseXMLHandler {
 	}
 	
 	/**
+	 * Returns time until next shot.
+	 * @return Returns time until next shot.
+	 */
+	public static Integer getTimeRemaining(){
+		return val_NextShotRemaining;
+	}
+	
+	/**
+	 * Sets time until next shot.
+	 * @param i Time until next shot.
+	 */
+	public static void setTimeRemaining(Integer i){
+		val_NextShotRemaining = i;
+	}
+	
+	/**
 	 * Makes a string from a bool.
 	 * @param b The bool to convert.
 	 * @return "true" or "false" string.
@@ -478,6 +524,15 @@ public class TapseXMLHandler {
 		}else{
 			return false;
 		}
+	}
+	
+	/**
+	 * Translates a path to unix format.
+	 * @param s The path to translate
+	 * @return The translated path.
+	 */
+	public static final String translatePath(String s){
+		return s.replace("\\\\", "/").replace("\\", "/");
 	}
 	
 }
