@@ -1,13 +1,12 @@
 package hu.ypg.tapse;
 
-import java.awt.AWTException;
-import java.awt.HeadlessException;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +21,7 @@ import javax.sound.sampled.Clip;
 import javax.swing.SwingWorker;
 
 import org.joda.time.DateTime;
+import org.junit.runners.ParentRunner;
 
 public class TapseCam extends SwingWorker<Void, Void> {
 	
@@ -62,7 +62,6 @@ public class TapseCam extends SwingWorker<Void, Void> {
 					//checking window
 					checkForWindow(settingsHandler.getProgName());
 				}
-				//Thread.sleep((long)settingsHandler.getFrequency()*1000);
 			}
 				
 		}
@@ -103,7 +102,7 @@ public class TapseCam extends SwingWorker<Void, Void> {
 				if(mid > to || mid < from)
 					return false;
 			}else{
-				if(mid > from || mid < to)
+				if(mid < from && mid > to)
 					return false;
 			}
 				
@@ -134,7 +133,7 @@ public class TapseCam extends SwingWorker<Void, Void> {
 				@Override
 			    public Boolean call() {
 					try{
-						String line;
+						//String line;
 					    
 						//start process
 						Process p = Runtime.getRuntime().exec(System.getenv("windir")+"\\system32\\"+"tasklist.exe /fo csv /nh /v ");
@@ -143,15 +142,16 @@ public class TapseCam extends SwingWorker<Void, Void> {
 						BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
 					    
 					    //parse process list
-					    while ((line = input.readLine()) != null) {
+					    /*while ((line = input.readLine()) != null) {
 					    	if(line.contains(param)){
 					    		return true;
 					        }
-					    }
-					    
+					    }*/
+						boolean x = parseProcessList(input, param);
+						
 					    //close reader, result false, nothing found
 					    input.close();
-					    return false;
+					    return x;
 					    
 					}catch(Exception e){
 						e.printStackTrace();
@@ -170,6 +170,23 @@ public class TapseCam extends SwingWorker<Void, Void> {
 	    }catch(Exception e) {
 	        e.printStackTrace();
 	    }
+	}
+	
+	/**
+	 * Parses process list.
+	 * @param input Input stream.
+	 * @param param Window title look for.
+	 * @return Returns true if title found
+	 * @throws IOException If can't read buffer
+	 */
+	public static boolean parseProcessList(BufferedReader input, String param) throws IOException{
+		String line;
+		while ((line = input.readLine()) != null) {
+	    	if(line.contains(param)){
+	    		return true;
+	        }
+	    }
+		return false;
 	}
 	
 	/**

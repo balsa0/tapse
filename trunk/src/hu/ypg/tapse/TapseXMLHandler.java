@@ -165,7 +165,7 @@ public class TapseXMLHandler {
 	/**
 	 * This method writes changes to the settings XML.
 	 */
-	public static void writeSettings(){
+	public void writeSettings(){
 		//log
 		LOGGER.info("Writing XML...");
 		
@@ -195,7 +195,7 @@ public class TapseXMLHandler {
 	 * Sets shot frequency.
 	 * @param freq Shot frequency in seconds.
 	 */
-	public static void setFrequency(Integer freq) {
+	public void setFrequency(Integer freq) {
 		//freqency can't be smaller than '1'
 		if(freq < 1)
 			freq = 1;
@@ -209,7 +209,7 @@ public class TapseXMLHandler {
 	 * Returns true if taking shots is allowed.
 	 * @return Returns true if taking shots is allowed.
 	 */
-	public static boolean isEnabled() {
+	public boolean isEnabled() {
 		return set_enabled;
 	}
 
@@ -217,7 +217,7 @@ public class TapseXMLHandler {
 	 * Sets program to active or passive state
 	 * @param enabled Enables or Disables taking shots.
 	 */
-	public static void setEnabled(boolean enabled) {
+	public void setEnabled(boolean enabled) {
 		//set variable
 		set_enabled = enabled;
 		
@@ -230,7 +230,7 @@ public class TapseXMLHandler {
 	 * Returns the shot save folder path.
 	 * @return Returns the shot save folder path.
 	 */
-	public static String getSaveFolder(){
+	public String getSaveFolder(){
 		return set_saveFolder;
 	}
 	
@@ -239,7 +239,7 @@ public class TapseXMLHandler {
 	 * @param folder The folder path.
 	 * @return returns false if folder not exists.
 	 */
-	public static boolean setSaveFolder(String folder){
+	public boolean setSaveFolder(String folder){
 		//translate folder path
 		folder = translatePath(folder);
 		
@@ -265,7 +265,7 @@ public class TapseXMLHandler {
 	 * @param folder The folder to check.
 	 * @return Returns true if folder is OK.
 	 */
-	private static boolean checkSaveFolder(String folder){
+	private boolean checkSaveFolder(String folder){
 		//check if folder exists
 		File f = new File(folder);
 		if(!f.exists())
@@ -279,7 +279,7 @@ public class TapseXMLHandler {
 	 * Checks if save folder is ready.
 	 * @return Returns true if folder is OK.
 	 */
-	public static boolean checkSaveFolder(){
+	public boolean checkSaveFolder(){
 		return checkSaveFolder(getSaveFolder());
 	}
 
@@ -287,7 +287,7 @@ public class TapseXMLHandler {
 	 * Returns the ID of the last shot.
 	 * @return Returns the ID of the last shot. (ID goes from 0 - )
 	 */
-	public static Integer getLastShotID() {
+	public Integer getLastShotID() {
 		return id_lastShot;
 	}
 
@@ -295,7 +295,7 @@ public class TapseXMLHandler {
 	 * Sets the actual shot id minus one (act - 1)
 	 * @param num ID of the last shot.
 	 */
-	public static void setLastShotID(Integer num) {		
+	public void setLastShotID(Integer num) {		
 		id_lastShot = num;
 		
 		//write xml
@@ -306,7 +306,7 @@ public class TapseXMLHandler {
 	 * Returns true if scheduling shots is enabled.
 	 * @return Returns true if scheduling shots is enabled.
 	 */
-	public static boolean isDaysEnabled(){
+	public boolean isDaysEnabled(){
 		return set_daysEnabled;
 	}
 	
@@ -314,7 +314,7 @@ public class TapseXMLHandler {
 	 * Enables/Disables scheduling shots.
 	 * @param enabled True turns scheduling on.
 	 */
-	public static void setDaysEnabled(boolean enabled){
+	public void setDaysEnabled(boolean enabled){
 		set_daysEnabled = enabled;
 		
 		//write xml
@@ -327,7 +327,7 @@ public class TapseXMLHandler {
 	 * @param dow Day of week (0-6) Begins with Sonday.
 	 * @return Retrurns true if taking shots is enabled that day.
 	 */
-	public static boolean isDayOfWeekEnabed(int dow){
+	public boolean isDayOfWeekEnabed(int dow){
 		
 		//must be between 0 and 6
 		if(dow >= set_days.length || dow < 0)
@@ -341,7 +341,7 @@ public class TapseXMLHandler {
 	 * @param enabled True enables taking shots on the specific day.
 	 * @return Returns true on success.
 	 */
-	public static boolean setDayOfWeekEnabled(Integer dow, boolean enabled){
+	public boolean setDayOfWeekEnabled(Integer dow, boolean enabled){
 		if(dow >= set_days.length || dow < 0)
 			return false;
 		set_days[dow] = enabled;
@@ -359,7 +359,7 @@ public class TapseXMLHandler {
 	 * Returns schedule start hour.
 	 * @return Returns schedule start hour.
 	 */
-	public static Integer getTimeFromH(){
+	public Integer getTimeFromH(){
 		return fromH;
 	}
 	
@@ -367,7 +367,7 @@ public class TapseXMLHandler {
 	 * Returns schedule start minute.
 	 * @return Returns schedule start minute.
 	 */
-	public static Integer getTimeFromM(){
+	public Integer getTimeFromM(){
 		return fromM;
 	}
 	
@@ -375,7 +375,7 @@ public class TapseXMLHandler {
 	 * Returns timefrom as string.
 	 * @return Returns timefrom as string
 	 */
-	public static String getTimeFrom(){
+	public String getTimeFrom(){
 		return String.format("%02d", fromH)+":"+String.format("%02d", fromM);
 	}
 	
@@ -383,7 +383,7 @@ public class TapseXMLHandler {
 	 * Returns schedule stop hour.
 	 * @return Returns schedule stop hour.
 	 */
-	public static Integer getTimeToH(){
+	public Integer getTimeToH(){
 		return toH;
 	}
 	
@@ -391,7 +391,7 @@ public class TapseXMLHandler {
 	 * Returns schedule stop minute.
 	 * @return Returns schedule stop minute.
 	 */
-	public static Integer getTimeToM(){
+	public Integer getTimeToM(){
 		return toM;
 	}
 	
@@ -399,7 +399,7 @@ public class TapseXMLHandler {
 	 * Returns timeto as string.
 	 * @return Returns timeto as string
 	 */
-	public static String getTimeTo(){
+	public String getTimeTo(){
 		return String.format("%02d", toH)+":"+String.format("%02d", toM);
 	}
 	
@@ -409,7 +409,7 @@ public class TapseXMLHandler {
 	 * @param m Start minute of hour.
 	 * @return Returns true on success.
 	 */
-	public static boolean setTimeFrom(Integer h, Integer m){
+	public boolean setTimeFrom(Integer h, Integer m){
 		if(h < 0 || h > 23 || m < 0 || m > 59)
 			return false;
 		fromH = h; fromM = m;
@@ -429,7 +429,7 @@ public class TapseXMLHandler {
 	 * @param m Stop minute of hour.
 	 * @return Returns true on success.
 	 */
-	public static boolean setTimeTo(Integer h, Integer m){
+	public boolean setTimeTo(Integer h, Integer m){
 		//checking for correct time intervals
 		if(h < 0 || h > 23 || m < 0 || m > 59)
 			return false;
@@ -449,7 +449,7 @@ public class TapseXMLHandler {
 	 * Returns true if program watching is active.
 	 * @return Returns true if program watching is active.
 	 */
-	public static boolean isProgEnabled(){
+	public boolean isProgEnabled(){
 		return set_progEnabled;
 	}
 	
@@ -457,7 +457,7 @@ public class TapseXMLHandler {
 	 * Enables/Disables program watching.
 	 * @param enabled True enables program watching.
 	 */
-	public static void setProgEnabled(boolean enabled){
+	public void setProgEnabled(boolean enabled){
 		set_progEnabled = enabled;
 		
 		//write xml
@@ -469,7 +469,7 @@ public class TapseXMLHandler {
 	 * Returns name of the watched program.
 	 * @return Returns name of the watched program.
 	 */
-	public static String getProgName(){
+	public String getProgName(){
 		return set_prog;
 	}
 	
@@ -477,7 +477,7 @@ public class TapseXMLHandler {
 	 * Sets name of the watched program.
 	 * @param name Name of the watched program.
 	 */
-	public static void setProgName(String name){
+	public void setProgName(String name){
 		set_prog = name;
 		
 		//write xml
@@ -488,7 +488,7 @@ public class TapseXMLHandler {
 	 * Returns time until next shot.
 	 * @return Returns time until next shot.
 	 */
-	public static Integer getTimeRemaining(){
+	public Integer getTimeRemaining(){
 		return val_NextShotRemaining;
 	}
 	
@@ -496,7 +496,7 @@ public class TapseXMLHandler {
 	 * Sets time until next shot.
 	 * @param i Time until next shot.
 	 */
-	public static void setTimeRemaining(Integer i){
+	public void setTimeRemaining(Integer i){
 		val_NextShotRemaining = i;
 	}
 	

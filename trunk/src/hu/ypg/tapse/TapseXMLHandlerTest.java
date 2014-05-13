@@ -26,5 +26,4 @@ public class TapseXMLHandlerTest {
 		assertEquals("/asd/asder", TapseXMLHandler.translatePath("\\asd\\\\asder"));
 		assertEquals("//////asder", TapseXMLHandler.translatePath("//\\//\\asder") );
 	}
-
 }
