@@ -239,7 +239,7 @@ public class TapseSettings {
 	
 	/**
 	 * Reads image given in path.
-	 * @param Path Path to image
+	 * @param path Path to image
 	 * @return Returns image.
 	 */
 	public static Image getImage(String path) {
